@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup de dispensaciones</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe3ef;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --accent-2: #0f766e;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .title h1 {
+      margin: 0 0 6px;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    .title p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .note {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.4;
+      max-width: 520px;
+    }
+
+    .filters, .cards, .chart-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(15, 23, 42, 0.05);
+    }
+
+    .filters {
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+
+    .field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .field select {
+      width: 100%;
+      min-height: 148px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+      font-size: 14px;
+      background: white;
+    }
+
+    .field small {
+      display: block;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: end;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat {
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .stat .label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .stat .value {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .chart-card {
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .chart-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .chart-head h2 {
+      margin: 0 0 4px;
+      font-size: 20px;
+    }
+
+    .chart-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .pill {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .chart-wrap {
+      height: 360px;
+      display: flex;
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    .y-axis {
+      width: 58px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+      padding: 6px 0 24px;
+    }
+
+    .plot {
+      flex: 1;
+      position: relative;
+      border-left: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 12px 14px 0;
+      display: flex;
+      align-items: end;
+      gap: 16px;
+      overflow-x: auto;
+      background-image: linear-gradient(to top, rgba(148,163,184,0.18) 1px, transparent 1px);
+      background-size: 100% 20%;
+      background-position: left bottom;
+    }
+
+    .bar-group {
+      min-width: 88px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar-value {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text);
+      min-height: 16px;
+    }
+
+    .bar {
+      width: 58px;
+      border-radius: 14px 14px 0 0;
+      background: linear-gradient(180deg, #60a5fa, #2563eb);
+      position: relative;
+      transition: 0.25s ease;
+      min-height: 6px;
+    }
+
+    .bar.asset {
+      background: linear-gradient(180deg, #2dd4bf, #0f766e);
+    }
+
+    .bar-label {
+      font-size: 12px;
+      text-align: center;
+      color: var(--text);
+      line-height: 1.2;
+      max-width: 88px;
+      word-break: break-word;
+      padding-bottom: 10px;
+    }
+
+    .empty {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-weight: 600;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .legend span::before {
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      margin-right: 8px;
+      vertical-align: middle;
+      background: var(--accent);
+    }
+
+    .legend span.assets::before {
+      background: var(--accent-2);
+    }
+
+    @media (max-width: 720px) {
+      .container { padding: 14px; }
+      .chart-wrap { height: 320px; }
+      .bar-group { min-width: 76px; }
+      .bar { width: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">
+        <h1>Mockup de dispensaciones</h1>
+        <p>Conteo de eventos de dispensación por cisterna y por asset.</p>
+      </div>
+      <div class="note">
+        El CSV trae 3 cisternas reales y 103 dispensaciones. La columna <strong>Conductor (Asset)</strong> no viene usable para este objetivo, así que en este mockup se simulan 10 assets para mostrar el comportamiento del filtro cruzado.
+      </div>
+    </div>
+
+    <section class="filters">
+      <div class="filters-grid">
+        <div class="field">
+          <label for="cisternasSelect">Filtro por cisternas</label>
+          <select id="cisternasSelect" multiple></select>
+          <small>Selección múltiple. Si no eliges nada, se toman todas.</small>
+        </div>
+
+        <div class="field">
+          <label for="assetsSelect">Filtro por assets</label>
+          <select id="assetsSelect" multiple></select>
+          <small>Selección múltiple. El filtro se relaciona con las cisternas y viceversa.</small>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" id="btnAll">Seleccionar todo</button>
+          <button class="btn-secondary" id="btnReset">Limpiar filtros</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="cards">
+      <div class="stat">
+        <div class="label">Dispensaciones filtradas</div>
+        <div class="value" id="totalDispensaciones">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">Cisternas visibles</div>
+        <div class="value" id="totalCisternas">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">Assets visibles</div>
+        <div class="value" id="totalAssets">0</div>
+      </div>
+    </section>
+
+    <section class="chart-card">
+      <div class="chart-head">
+        <div>
+          <h2>Dispensaciones por cisterna</h2>
+          <p>Se cuenta el número de veces que aparece cada cisterna, no los litros.</p>
+        </div>
+        <div class="pill" id="cisternaPill">0 cisternas</div>
+      </div>
+      <div class="chart-wrap">
+        <div class="y-axis" id="cisternaAxis"></div>
+        <div class="plot" id="cisternaChart"></div>
+      </div>
+      <div class="legend">
+        <span>Cisternas dispensadoras</span>
+      </div>
+    </section>
+
+    <section class="chart-card">
+      <div class="chart-head">
+        <div>
+          <h2>Dispensaciones por asset</h2>
+          <p>Cuando eliges una cisterna, aquí aparecen sólo los assets relacionados.</p>
+        </div>
+        <div class="pill" id="assetPill">0 assets</div>
+      </div>
+      <div class="chart-wrap">
+        <div class="y-axis" id="assetAxis"></div>
+        <div class="plot" id="assetChart"></div>
+      </div>
+      <div class="legend">
+        <span class="assets">Assets abastecidos</span>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const data = [
+      { cisterna: 'SZBX30 - FLUJOMETRO', asset: 'Asset 03' },
+      { cisterna: 'SVTX39 - FLUJOMETRO', asset: 'Asset 07' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 03' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 04' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 05' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 06' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 07' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 08' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 09' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 10' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 01' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 02' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 03' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 04' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 05' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 06' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 07' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 08' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 09' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 10' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 01' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 02' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 03' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 04' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 05' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 06' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 07' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 08' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 09' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 10' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 01' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 02' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 03' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 04' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 05' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 06' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 07' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 08' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 09' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 10' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 01' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 02' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 03' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 04' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 05' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 06' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 07' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 08' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 09' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 10' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 01' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 02' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 03' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 04' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 05' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 06' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 07' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 08' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 09' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 10' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 01' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 02' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 03' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 04' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 05' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 06' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 07' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 08' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 09' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 10' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 01' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 02' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 03' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 04' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 05' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 06' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 07' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 08' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 09' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 10' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 01' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 02' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 03' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 04' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 05' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 06' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 07' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 08' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 09' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 10' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 01' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 02' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 03' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 04' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 05' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 06' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 07' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 08' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 09' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 10' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 01' },
+      { cisterna: 'SZBK98 - FLUJOMETRO', asset: 'Asset 02' }
+    ];
+
+    const cisternasSelect = document.getElementById('cisternasSelect');
+    const assetsSelect = document.getElementById('assetsSelect');
+
+    const totalDispensaciones = document.getElementById('totalDispensaciones');
+    const totalCisternas = document.getElementById('totalCisternas');
+    const totalAssets = document.getElementById('totalAssets');
+
+    const cisternaChart = document.getElementById('cisternaChart');
+    const assetChart = document.getElementById('assetChart');
+    const cisternaAxis = document.getElementById('cisternaAxis');
+    const assetAxis = document.getElementById('assetAxis');
+    const cisternaPill = document.getElementById('cisternaPill');
+    const assetPill = document.getElementById('assetPill');
+
+    const allCisternas = [...new Set(data.map(d => d.cisterna))].sort();
+    const allAssets = [...new Set(data.map(d => d.asset))].sort((a, b) => {
+      const na = Number(a.split(' ')[1]);
+      const nb = Number(b.split(' ')[1]);
+      return na - nb;
+    });
+
+    function getSelectedValues(select) {
+      return [...select.options].filter(o => o.selected).map(o => o.value);
+    }
+
+    function setOptions(select, options, selectedValues) {
+      const previous = new Set(selectedValues || []);
+      select.innerHTML = options.map(value => {
+        const selected = previous.size === 0 || previous.has(value) ? 'selected' : '';
+        return `<option value="${value}" ${selected}>${value}</option>`;
+      }).join('');
+    }
+
+    function countBy(items, key) {
+      const map = new Map();
+      items.forEach(item => map.set(item[key], (map.get(item[key]) || 0) + 1));
+      return [...map.entries()]
+        .map(([label, value]) => ({ label, value }))
+        .sort((a, b) => b.value - a.value || a.label.localeCompare(b.label));
+    }
+
+    function buildAxis(axisEl, maxValue) {
+      const top = Math.max(maxValue, 1);
+      const ticks = 5;
+      axisEl.innerHTML = Array.from({ length: ticks + 1 }, (_, i) => {
+        const value = Math.round((top * (ticks - i)) / ticks);
+        return `<div>${value}</div>`;
+      }).join('');
+    }
+
+    function renderBars(container, axis, dataset, barClass) {
+      if (!dataset.length) {
+        buildAxis(axis, 1);
+        container.innerHTML = '<div class="empty">No hay datos para la combinación de filtros seleccionada.</div>';
+        return;
+      }
+
+      const maxValue = Math.max(...dataset.map(d => d.value));
+      buildAxis(axis, maxValue);
+
+      container.innerHTML = dataset.map(d => {
+        const height = Math.max(6, (d.value / maxValue) * 100);
+        return `
+          <div class="bar-group">
+            <div class="bar-value">${d.value}</div>
+            <div class="bar ${barClass}" style="height:${height}%" title="${d.label}: ${d.value}"></div>
+            <div class="bar-label">${d.label}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getFilteredData(selectedCisternas, selectedAssets) {
+      const cisternas = selectedCisternas.length ? selectedCisternas : allCisternas;
+      const assets = selectedAssets.length ? selectedAssets : allAssets;
+      return data.filter(d => cisternas.includes(d.cisterna) && assets.includes(d.asset));
+    }
+
+    function syncOptions() {
+      const selectedCisternas = getSelectedValues(cisternasSelect);
+      const selectedAssets = getSelectedValues(assetsSelect);
+      const filtered = getFilteredData(selectedCisternas, selectedAssets);
+
+      const validCisternas = [...new Set(filtered.map(d => d.cisterna))].sort();
+      const validAssets = [...new Set(filtered.map(d => d.asset))].sort((a, b) => Number(a.split(' ')[1]) - Number(b.split(' ')[1]));
+
+      const nextCisternas = selectedAssets.length ? validCisternas : allCisternas;
+      const nextAssets = selectedCisternas.length ? validAssets : allAssets;
+
+      const keepCisternas = selectedCisternas.filter(v => nextCisternas.includes(v));
+      const keepAssets = selectedAssets.filter(v => nextAssets.includes(v));
+
+      setOptions(cisternasSelect, nextCisternas, keepCisternas);
+      setOptions(assetsSelect, nextAssets, keepAssets);
+    }
+
+    function render() {
+      const selectedCisternas = getSelectedValues(cisternasSelect);
+      const selectedAssets = getSelectedValues(assetsSelect);
+      const filtered = getFilteredData(selectedCisternas, selectedAssets);
+
+      const cisternaCounts = countBy(filtered, 'cisterna');
+      const assetCounts = countBy(filtered, 'asset');
+
+      totalDispensaciones.textContent = filtered.length;
+      totalCisternas.textContent = cisternaCounts.length;
+      totalAssets.textContent = assetCounts.length;
+      cisternaPill.textContent = `${cisternaCounts.length} cisterna${cisternaCounts.length === 1 ? '' : 's'}`;
+      assetPill.textContent = `${assetCounts.length} asset${assetCounts.length === 1 ? '' : 's'}`;
+
+      renderBars(cisternaChart, cisternaAxis, cisternaCounts, '');
+      renderBars(assetChart, assetAxis, assetCounts, 'asset');
+    }
+
+    function refreshAll() {
+      syncOptions();
+      render();
+    }
+
+    function selectAll(select) {
+      [...select.options].forEach(opt => opt.selected = true);
+    }
+
+    function clearAll(select) {
+      [...select.options].forEach(opt => opt.selected = false);
+    }
+
+    setOptions(cisternasSelect, allCisternas, allCisternas);
+    setOptions(assetsSelect, allAssets, allAssets);
+    refreshAll();
+
+    cisternasSelect.addEventListener('change', refreshAll);
+    assetsSelect.addEventListener('change', refreshAll);
+
+    document.getElementById('btnAll').addEventListener('click', () => {
+      selectAll(cisternasSelect);
+      selectAll(assetsSelect);
+      refreshAll();
+    });
+
+    document.getElementById('btnReset').addEventListener('click', () => {
+      clearAll(cisternasSelect);
+      clearAll(assetsSelect);
+      refreshAll();
+    });
+  </script>
+</body>
+</html>
