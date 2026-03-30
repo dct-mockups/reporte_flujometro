@@ -317,6 +317,52 @@
       .bar {
         width: 48px;
       }
+
+      .bar-group.fecha-group {
+        min-width: 90px;
+      }
+
+      .bar-label.fecha-label {
+        font-size: 9px;
+        max-width: 80px;
+      }
+
+    }
+
+    .bar-group.fecha-group {
+      min-width: 110px;
+    }
+
+    .bar-label.fecha-label {
+      font-size: 10px;
+      white-space: normal;
+      line-height: 1.3;
+      word-break: break-word;
+      max-width: 100px;
+      text-align: center;
+      padding-bottom: 10px;
+      margin-top: 8px;
+      transform: none;
+      /* Quitar cualquier rotación */
+    }
+
+    .bar-label {
+      font-size: 12px;
+      text-align: center;
+      color: var(--text);
+      line-height: 1.2;
+      max-width: 88px;
+      word-break: break-word;
+      padding-bottom: 10px;
+    }
+
+    /* Para las fechas, permitir que sean más compactas */
+    .bar-label[data-type="fecha"] {
+      font-size: 10px;
+      transform: rotate(-45deg);
+      transform-origin: top left;
+      margin-left: 10px;
+      white-space: nowrap;
     }
   </style>
 </head>
@@ -329,7 +375,8 @@
         <p>Total de litros dispensados por cisterna y por asset.</p>
       </div>
       <div class="note">
-        Este mockup utiliza datos imaginarios aleatórios para visualizar la parte gráfica deseada para complementar el reporte de flujómetros, y el comportamiento de los filtros cruzados entre cisternas y assets.
+        Este mockup utiliza datos imaginarios aleatórios para visualizar la parte gráfica deseada para complementar el
+        reporte de flujómetros, y el comportamiento de los filtros cruzados entre cisternas y assets.
 
       </div>
     </div>
@@ -348,10 +395,10 @@
           <small>Selección múltiple. El filtro se relaciona con las cisternas y viceversa.</small>
         </div>
 
-<div class="actions">
-  <button class="btn-primary" id="btnAplicar">Aplicar filtros</button>
-  <button class="btn-secondary" id="btnReset">Limpiar filtros</button>
-</div>
+        <div class="actions">
+          <button class="btn-primary" id="btnAplicar">Aplicar filtros</button>
+          <button class="btn-secondary" id="btnReset">Limpiar filtros</button>
+        </div>
       </div>
     </section>
 
@@ -403,67 +450,144 @@
         <span class="assets">Assets abastecidos</span>
       </div>
     </section>
+
+    <section class="chart-card">
+      <div class="chart-head">
+        <div>
+          <h2>Dispensaciones por fecha</h2>
+          <p>Litros dispensados por fecha según los filtros seleccionados.</p>
+        </div>
+        <div class="pill" id="fechaPill">0 dispensaciones</div>
+      </div>
+      <div class="chart-wrap">
+        <div class="y-axis" id="fechaAxis"></div>
+        <div class="plot" id="fechaChart"></div>
+      </div>
+      <div class="legend">
+        <span>Dispensaciones diarias</span>
+      </div>
+    </section>
+
   </div>
 
   <script>
-    // const data = [{ "cisterna": "SZBX30 - FLUJOMETRO", "asset": "Asset 01", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 02", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 03", "litros": 0.01 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 04", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 05", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 06", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 07", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 08", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 09", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 10", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 01", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 02", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 03", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 04", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 05", "litros": 8.99 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 06", "litros": 66.12 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 07", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 08", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 09", "litros": 24.88 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 10", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 01", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 02", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 03", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 04", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 05", "litros": 28.99 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 06", "litros": 64.08 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 07", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 08", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 09", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 10", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 01", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 02", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 03", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 04", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 05", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 06", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 07", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 08", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 09", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 10", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 01", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 02", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 03", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 04", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 05", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 06", "litros": 15.34 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 07", "litros": 70.48 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 08", "litros": 11.57 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 09", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 10", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 01", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 02", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 03", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 04", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 05", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 06", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 07", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 08", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 09", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 10", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 01", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 02", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 03", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 04", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 05", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 06", "litros": 13.72 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 07", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 08", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 09", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 10", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 01", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 02", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 03", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 04", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 05", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 06", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 07", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 08", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 09", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 10", "litros": 8.34 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 01", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 02", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 03", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 04", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 05", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 06", "litros": 24.7 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 07", "litros": 73.85 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 08", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 09", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 10", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 01", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 02", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 03", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 04", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 05", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 06", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 07", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 08", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 09", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 10", "litros": 0.0 }, { "cisterna": "SZBK98 - FLUJOMETRO", "asset": "Asset 01", "litros": 0.0 }, { "cisterna": "SVTX39 - FLUJOMETRO", "asset": "Asset 02", "litros": 0.0 }];
+    const fechaChart = document.getElementById('fechaChart');
+    const fechaAxis = document.getElementById('fechaAxis');
+    const fechaPill = document.getElementById('fechaPill');
 
-const cisternas = [
-  "SZBX30 - FLUJOMETRO",
-  "SZBK98 - FLUJOMETRO",
-  "SVTX39 - FLUJOMETRO"
-];
+    const cisternas = [
+      "SZBX30 - FLUJOMETRO",
+      "SZBK98 - FLUJOMETRO",
+      "SVTX39 - FLUJOMETRO"
+    ];
 
-const assets = Array.from({ length: 10 }, (_, i) => 
-  `Asset ${String(i + 1).padStart(2, "0")}`
-);
+    const assets = Array.from({ length: 10 }, (_, i) =>
+      `Asset ${String(i + 1).padStart(2, "0")}`
+    );
 
-// Generar datos más realistas para el mockup
-const litrosBase = [];
+    // Generar datos más realistas para el mockup
+    // Generar datos más realistas para el mockup
+    const litrosBase = [];
 
-// Para cada combinación de cisterna y asset, asignar valores realistas
-cisternas.forEach((cisterna, cisternaIdx) => {
-  assets.forEach((asset, assetIdx) => {
-    // Número de registros por combinación (entre 1 y 4)
-    const numRegistros = Math.floor(Math.random() * 4) + 1;
-    
-    for (let i = 0; i < numRegistros; i++) {
-      // Valores más realistas: entre 5 y 80 litros, con algunos valores pequeños
-      let litros;
-      if (assetIdx === 0 || assetIdx === 1 || assetIdx === 2 || assetIdx === 3) {
-        // Asset 01, 02, 03, 04 también tendrán valores
-        litros = Math.random() > 0.3 ? 
-          Number((Math.random() * 75 + 5).toFixed(2)) : // Entre 5 y 80 litros
-          Number((Math.random() * 4 + 0.5).toFixed(2)); // Entre 0.5 y 4.5 litros
-      } else {
-        // Assets con valores ya existentes mantienen su distribución
-        litros = Math.random() > 0.2 ? 
-          Number((Math.random() * 70 + 10).toFixed(2)) : 
-          Number((Math.random() * 5).toFixed(2));
-      }
-      
-      // Asegurar que algunos valores sean cero para variabilidad
-      if (Math.random() < 0.15) litros = 0;
-      
-      litrosBase.push({
-        cisterna: cisterna,
-        asset: asset,
-        litros: litros
-      });
+    // Generar un rango de fechas (últimos 30 días)
+    const fechas = [];
+    const today = new Date();
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+      fechas.push(dateStr);
     }
-  });
-});
 
-// Mezclar los datos para que no estén perfectamente ordenados
-for (let i = litrosBase.length - 1; i > 0; i--) {
-  const j = Math.floor(Math.random() * (i + 1));
-  [litrosBase[i], litrosBase[j]] = [litrosBase[j], litrosBase[i]];
-}
+    // Para cada combinación de cisterna y asset, asignar valores realistas
+    cisternas.forEach((cisterna, cisternaIdx) => {
+      assets.forEach((asset, assetIdx) => {
+        // Número de registros por combinación (entre 5 y 15)
+        const numRegistros = Math.floor(Math.random() * 10) + 5;
 
-const data = litrosBase;
+        for (let i = 0; i < numRegistros; i++) {
+          // Seleccionar una fecha aleatoria
+          const fecha = fechas[Math.floor(Math.random() * fechas.length)];
 
+          // Valores más realistas: entre 5 y 80 litros, con algunos valores pequeños
+          let litros;
+          if (assetIdx === 0 || assetIdx === 1 || assetIdx === 2 || assetIdx === 3) {
+            // Asset 01, 02, 03, 04 también tendrán valores
+            litros = Math.random() > 0.3 ?
+              Number((Math.random() * 75 + 5).toFixed(2)) : // Entre 5 y 80 litros
+              Number((Math.random() * 4 + 0.5).toFixed(2)); // Entre 0.5 y 4.5 litros
+          } else {
+            // Assets con valores ya existentes mantienen su distribución
+            litros = Math.random() > 0.2 ?
+              Number((Math.random() * 70 + 10).toFixed(2)) :
+              Number((Math.random() * 5).toFixed(2));
+          }
 
+          // SOLO agregar si litros es mayor a 0 (eliminar valores 0)
+          if (litros > 0) {
+            litrosBase.push({
+              cisterna: cisterna,
+              asset: asset,
+              fecha: fecha,
+              litros: litros
+            });
+          }
+        }
+      });
+    });
+    // Mezclar los datos para que no estén perfectamente ordenados
+    for (let i = litrosBase.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [litrosBase[i], litrosBase[j]] = [litrosBase[j], litrosBase[i]];
+    }
 
+    const data = litrosBase;
+
+    function sumByFechaAndAsset(items) {
+      const map = new Map();
+      items.forEach(item => {
+        const litros = item.litros || 0;
+        const fecha = item.fecha;
+        const asset = item.asset;
+        const key = `${fecha}|${asset}`;
+
+        if (!map.has(key)) {
+          map.set(key, { fecha, asset, litros: 0 });
+        }
+        map.get(key).litros += litros;
+      });
+
+      // Convertir a array y agrupar por fecha
+      const groupedByFecha = new Map();
+      const entries = Array.from(map.values());
+
+      entries.forEach(entry => {
+        if (!groupedByFecha.has(entry.fecha)) {
+          groupedByFecha.set(entry.fecha, []);
+        }
+        groupedByFecha.get(entry.fecha).push(entry);
+      });
+
+      // Ordenar por fecha y luego por asset
+      const sortedFechas = Array.from(groupedByFecha.keys()).sort();
+      const result = [];
+
+      sortedFechas.forEach(fecha => {
+        const assetsForFecha = groupedByFecha.get(fecha);
+        assetsForFecha.sort((a, b) => a.asset.localeCompare(b.asset));
+        assetsForFecha.forEach(item => {
+          // Formato: fecha en una línea, asset en la siguiente
+          result.push({
+            label: `${fecha}<br>${item.asset}`,
+            value: item.litros,
+            fecha: fecha,
+            asset: item.asset
+          });
+        });
+      });
+
+      return result;
+    }
     const cisternasSelect = document.getElementById('cisternasSelect');
     const assetsSelect = document.getElementById('assetsSelect');
 
@@ -517,7 +641,7 @@ const data = litrosBase;
       }).join('');
     }
 
-    function renderBars(container, axis, dataset, barClass) {
+    function renderBars(container, axis, dataset, barClass, isFechaChart = false) {
       if (!dataset.length) {
         buildAxis(axis, 1);
         container.innerHTML = '<div class="empty">No hay datos para la combinación de filtros seleccionada.</div>';
@@ -529,16 +653,18 @@ const data = litrosBase;
 
       container.innerHTML = dataset.map(d => {
         const height = Math.max(6, (d.value / maxValue) * 100);
+        const labelClass = isFechaChart ? 'bar-label fecha-label' : 'bar-label';
+        const groupClass = isFechaChart ? 'bar-group fecha-group' : 'bar-group';
+
         return `
-          <div class="bar-group">
-            <div class="bar-value">${d.value.toFixed(1)}</div>
-            <div class="bar ${barClass}" style="height:${height}%" title="${d.label}: ${d.value}"></div>
-            <div class="bar-label">${d.label}</div>
-          </div>
-        `;
+      <div class="${groupClass}">
+        <div class="bar-value">${d.value.toFixed(1)}</div>
+        <div class="bar ${barClass}" style="height:${height}%" title="${d.label}: ${d.value} litros"></div>
+        <div class="${labelClass}">${d.label}</div>
+      </div>
+    `;
       }).join('');
     }
-
     function getFilteredData(selectedCisternas, selectedAssets) {
       const cisternas = selectedCisternas.length ? selectedCisternas : allCisternas;
       const assets = selectedAssets.length ? selectedAssets : allAssets;
@@ -546,34 +672,33 @@ const data = litrosBase;
     }
 
     function aplicarFiltros() {
-  // Obtener los valores seleccionados actualmente en los selects
-  currentFilters.cisternas = getSelectedValues(cisternasSelect);
-  currentFilters.assets = getSelectedValues(assetsSelect);
-  
-  // Renderizar con los nuevos filtros
-  render();
-}
+      // Obtener los valores seleccionados actualmente en los selects
+      currentFilters.cisternas = getSelectedValues(cisternasSelect);
+      currentFilters.assets = getSelectedValues(assetsSelect);
 
-function limpiarFiltros() {
-  // Limpiar la selección visual de los selects
-  clearAll(cisternasSelect);
-  clearAll(assetsSelect);
-  
-  // Limpiar los filtros actuales
-  currentFilters.cisternas = [];
-  currentFilters.assets = [];
-  
-  // Renderizar todos los datos
-  render();
-}
+      // Renderizar con los nuevos filtros
+      render();
+    }
+
+    function limpiarFiltros() {
+      // Limpiar la selección visual de los selects
+      clearAll(cisternasSelect);
+      clearAll(assetsSelect);
+
+      // Limpiar los filtros actuales
+      currentFilters.cisternas = [];
+      currentFilters.assets = [];
+
+      // Renderizar todos los datos
+      render();
+    }
 
     function render() {
-      const selectedCisternas = getSelectedValues(cisternasSelect);
-      const selectedAssets = getSelectedValues(assetsSelect);
-  const filtered = getFilteredData(currentFilters.cisternas, currentFilters.assets);
+      const filtered = getFilteredData(currentFilters.cisternas, currentFilters.assets);
 
       const cisternaCounts = sumBy(filtered, 'cisterna');
       const assetCounts = sumBy(filtered, 'asset');
+      const fechaCounts = sumByFechaAndAsset(filtered); // Cambiado a la nueva función
 
       const totalLitros = filtered.reduce((acc, d) => acc + (d.litros || 0), 0);
 
@@ -582,9 +707,11 @@ function limpiarFiltros() {
       totalAssets.textContent = assetCounts.length;
       cisternaPill.textContent = `${cisternaCounts.length} cisterna${cisternaCounts.length === 1 ? '' : 's'}`;
       assetPill.textContent = `${assetCounts.length} asset${assetCounts.length === 1 ? '' : 's'}`;
+      fechaPill.textContent = `${fechaCounts.length} dispensaciones individuales`; // Cambiado el texto
 
       renderBars(cisternaChart, cisternaAxis, cisternaCounts, '');
       renderBars(assetChart, assetAxis, assetCounts, 'asset');
+      renderBars(fechaChart, fechaAxis, fechaCounts, '', true); // true indica que es gráfica de fechas
     }
 
 
@@ -596,24 +723,24 @@ function limpiarFiltros() {
       [...select.options].forEach(opt => opt.selected = false);
     }
 
-// Variables para almacenar los filtros actuales
-let currentFilters = {
-  cisternas: [],
-  assets: []
-};
+    // Variables para almacenar los filtros actuales
+    let currentFilters = {
+      cisternas: [],
+      assets: []
+    };
 
-// Inicializar los selects con todas las opciones (ninguna seleccionada)
-setOptions(cisternasSelect, allCisternas, []);
-setOptions(assetsSelect, allAssets, []);
+    // Inicializar los selects con todas las opciones (ninguna seleccionada)
+    setOptions(cisternasSelect, allCisternas, []);
+    setOptions(assetsSelect, allAssets, []);
 
-// Inicializar sin filtros (mostrar todos los datos)
-currentFilters.cisternas = [];
-currentFilters.assets = [];
-render();
+    // Inicializar sin filtros (mostrar todos los datos)
+    currentFilters.cisternas = [];
+    currentFilters.assets = [];
+    render();
 
-// Event listeners
-document.getElementById('btnAplicar').addEventListener('click', aplicarFiltros);
-document.getElementById('btnReset').addEventListener('click', limpiarFiltros);
+    // Event listeners
+    document.getElementById('btnAplicar').addEventListener('click', aplicarFiltros);
+    document.getElementById('btnReset').addEventListener('click', limpiarFiltros);
   </script>
 </body>
 
